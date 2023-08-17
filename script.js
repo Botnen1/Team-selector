@@ -82,18 +82,23 @@ function spin() {
 
     const selectedPlayers = Array.from(document.querySelectorAll('.player input:checked'))
                                .map(checkbox => checkbox.value);
-    const shuffledSelectedPlayers = shuffleArray(selectedPlayers.slice());
 
-    const shuffledTeams = shuffleArray(teams.slice());
+    const selectedPlayersData = teams.filter(player => selectedPlayers.includes(player.name));
 
+    const shuffledPlayers = shuffleArray(selectedPlayersData.slice());
+
+    const shuffledTeamIndices = shuffleArray([...Array(selectedTeamCount).keys()]);
+
+    const slotElements = [];
     for (let teamIndex = 0; teamIndex < selectedTeamCount; teamIndex++) {
         const teamContainer = document.createElement('div');
         teamContainer.className = 'team';
 
         for (let playerIndex = 0; playerIndex < selectedPlayerCount; playerIndex++) {
-            if (shuffledSelectedPlayers.length > 0) {
-                const player = shuffledSelectedPlayers.pop();
+            if (shuffledPlayers.length > 0) {
+                const player = shuffledPlayers.pop();
                 const slot = createSlot(player.img);
+                slotElements.push(slot);
                 teamContainer.appendChild(slot);
             }
         }
@@ -101,7 +106,7 @@ function spin() {
         slotContainer.appendChild(teamContainer);
     }
 
-    spinAllTeams(shuffledTeams);
+    spinAllTeams(slotElements, shuffledTeamIndices, selectedPlayersData);
 }
 
 
@@ -113,18 +118,18 @@ function createSlot(imgUrl) {
     return slot;
 }
 
-function spinAllTeams(shuffledTeams) {
-    const slotElements = document.querySelectorAll('.slot');
+function spinAllTeams(slotElements, shuffledTeamIndices, selectedPlayersData) {
     const spins = 100; // Increase the number of spins
     const spinDuration = 40; // Decrease the duration for a smoother animation
     let spinsDone = 0;
-    
-    const shuffledIndices = shuffleArray([...Array(shuffledTeams.length).keys()]);
+
+    const shuffledIndices = shuffleArray([...Array(selectedPlayersData.length).keys()]);
 
     const spinInterval = setInterval(() => {
         slotElements.forEach((slot, slotIndex) => {
-            const playerIndex = shuffledIndices[(slotIndex + spinsDone) % shuffledTeams.length];
-            const player = shuffledTeams[playerIndex];
+            const teamIndex = shuffledTeamIndices[slotIndex % shuffledTeamIndices.length];
+            const playerIndex = shuffledIndices[(slotIndex + spinsDone) % selectedPlayersData.length];
+            const player = selectedPlayersData[playerIndex];
             slot.style.backgroundImage = `url('${player.img}')`;
         });
 
@@ -137,6 +142,7 @@ function spinAllTeams(shuffledTeams) {
         }
     }, spinDuration);
 }
+
 
 
 function shuffleArray(array) {
