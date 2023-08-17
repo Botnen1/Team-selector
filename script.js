@@ -82,17 +82,17 @@ function spin() {
 
     const selectedPlayers = Array.from(document.querySelectorAll('.player input:checked'))
                                .map(checkbox => checkbox.value);
+    const shuffledSelectedPlayers = shuffleArray(selectedPlayers.slice());
 
-    const selectedPlayersData = teams.filter(player => selectedPlayers.includes(player.name));
-    const shuffledPlayers = shuffleArray(selectedPlayersData.slice());
+    const shuffledTeams = shuffleArray(teams.slice());
 
     for (let teamIndex = 0; teamIndex < selectedTeamCount; teamIndex++) {
         const teamContainer = document.createElement('div');
         teamContainer.className = 'team';
 
         for (let playerIndex = 0; playerIndex < selectedPlayerCount; playerIndex++) {
-            if (shuffledPlayers.length > 0) {
-                const player = shuffledPlayers.pop();
+            if (shuffledSelectedPlayers.length > 0) {
+                const player = shuffledSelectedPlayers.pop();
                 const slot = createSlot(player.img);
                 teamContainer.appendChild(slot);
             }
@@ -101,8 +101,9 @@ function spin() {
         slotContainer.appendChild(teamContainer);
     }
 
-    spinAllTeams(selectedPlayersData.length); // Pass the number of selected players
+    spinAllTeams(shuffledTeams);
 }
+
 
 
 function createSlot(imgUrl) {
@@ -112,23 +113,18 @@ function createSlot(imgUrl) {
     return slot;
 }
 
-function spinAllTeams() {
+function spinAllTeams(shuffledTeams) {
     const slotElements = document.querySelectorAll('.slot');
     const spins = 100; // Increase the number of spins
     const spinDuration = 40; // Decrease the duration for a smoother animation
     let spinsDone = 0;
-
-    // Create a shuffled array of player indices for selected players
-    const selectedPlayers = Array.from(document.querySelectorAll('.player input:checked'))
-                               .map(checkbox => checkbox.value);
-    const selectedPlayersIndices = selectedPlayers.map(playerName =>
-        teams.findIndex(player => player.name === playerName)
-    );
+    
+    const shuffledIndices = shuffleArray([...Array(shuffledTeams.length).keys()]);
 
     const spinInterval = setInterval(() => {
         slotElements.forEach((slot, slotIndex) => {
-            const playerIndex = selectedPlayersIndices[(slotIndex + spinsDone) % selectedPlayersIndices.length];
-            const player = teams[playerIndex];
+            const playerIndex = shuffledIndices[(slotIndex + spinsDone) % shuffledTeams.length];
+            const player = shuffledTeams[playerIndex];
             slot.style.backgroundImage = `url('${player.img}')`;
         });
 
