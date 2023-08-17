@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+    <title>Team Randomizer</title>
+</head>
+<body>
+    <div class="box">
+        <select id="teamCount">
+            <option value="1">1 Team</option>
+            <option value="2">2 Teams</option>
+            <option value="3">3 Teams</option>
+            <option value="4">4 Teams</option>
+            <option value="5">5 Teams</option>
+        </select>
+        
+        <select id="playerCount">
+            <option value="1">1 Player per Team</option>
+            <option value="2">2 Players per Team</option>
+            <option value="3">3 Players per Team</option>
+            <option value="4">4 Players per Team</option>
+            <option value="5">5 Players per Team</option>
+        </select>
+        
+        <button id="spinButton">Spin</button>
+        <button id="resetButton">Reset</button>
+
+        <div id="playerSelection"></div> <!-- Container for player selection -->
+
+        <div id="slotContainer"></div>
+        
+        <script src="script.js"></script>
+    </div>
+</body>
+</html>
